@@ -10,6 +10,6 @@ app.use((req, res, next) => {
     return res.json({ message: 'Route not found' })
 })
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.warn('Running...');
 })
