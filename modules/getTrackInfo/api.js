@@ -65,7 +65,7 @@ route.get('/api/track/:tracking', async (req, res) => {
         { new: true }
     ) : await model.create({ ...ds })
 
-    res.status(200).json({ ...dbResult })
+    res.status(200).json({ dbResult })
 })
 
 
