@@ -59,7 +59,7 @@ route.get('/api/track/:tracking', async (req, res) => {
         searchData: new Date()
     }
 
-    const dbResult = exists._id ? await model.findOneAndUpdate(
+    const dbResult = exists && exists._id ? await model.findOneAndUpdate(
         { _id: exists._id },
         { $set: { ...ds } },
         { new: true }
