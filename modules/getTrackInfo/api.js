@@ -1,15 +1,15 @@
 const axios = require('axios');
-const tabletojson = require('tabletojson').Tabletojson;
-const Iconv = require("iconv").Iconv;
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const express = require('express');
-const route = express.Router()
+const route = express.Router();
+const model = require('./model');
 
 route.get('/api/track/:tracking', async (req, res) => {
     const { tracking } = req.params;
     if (!tracking) return res.status(400).json({ message: 'without tracking number' })
-    // OJ578370679BR
+    const exists = await model.findOne({ trackNumber: tracking });
+
     const result = await axios.get(`https://www.linkcorreios.com.br/?id=${tracking}`, {
         "headers": {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -53,7 +53,19 @@ route.get('/api/track/:tracking', async (req, res) => {
         }
     })
 
-    res.status(200).json({ info })
+    let ds = {
+        trackNumber: tracking,
+        info: info,
+        searchData: new Date()
+    }
+
+    const dbResult = exists._id ? await model.findOneAndUpdate(
+        { _id: exists._id },
+        { $set: { ...ds } },
+        { new: true }
+    ) : await model.create({ ...ds })
+
+    res.status(200).json({ dbResult })
 })
 
 

@@ -3,7 +3,8 @@ const express = require('express');
 const app = express();
 app.use(express.json({ limit: "50mb", extended: true }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-require('./api')(app);
+require('./modules/index')(app);
+require('./config/mongoose');
 
 app.use((req, res, next) => {
     res.status(404);
